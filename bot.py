@@ -8,7 +8,8 @@ print("Бот запущен!")
 def on_start(update, context):
     main_buttons = [
         ["Продажа", "Категории"],
-        ["Отчеты", "История"]
+        ["Отчеты", "История"],
+        ["Добавить товар"]
     ]
     buttons = ReplyKeyboardMarkup(main_buttons)
     chat = update.effective_chat
