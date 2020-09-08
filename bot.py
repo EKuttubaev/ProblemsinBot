@@ -1,6 +1,6 @@
 import config
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
-from telegram import ReplyKeyboardMarkup,ReplyKeyboardRemove
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 print("Бот запущен!")
 
