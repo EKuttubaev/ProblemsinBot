@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 .idea/*
 __pycache__/*
 venv/*
-=======
-venv/*
-.idea/*
->>>>>>> fff9693... Initial commit
+config.py
