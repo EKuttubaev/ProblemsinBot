@@ -1,7 +1,10 @@
-import config
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
+import configuration
+import functions
 
+updater = Updater(configuration.TOKEN, use_context=True)
+dispatcher = updater.dispatcher
 print("Бот запущен!")
 
 
@@ -17,9 +20,17 @@ def on_start(update, context):
                              reply_markup=buttons)
 
 
-updater = Updater(config.token, use_context=True)
-dispatcher = updater.dispatcher
-dispatcher.add_handler(CommandHandler("start", on_start))
+function_handler = ConversationHandler(
+    entry_points=[MessageHandler(Filters.regex("Продажа"), functions.add_product_name)],
+    states={
+        1: [MessageHandler(Filters.text, functions.product_unit)],
+        2: [MessageHandler(Filters.text, functions.add_expense)],
+    },
 
+    fallbacks=[CommandHandler("clean", functions.clean)]
+)
+
+dispatcher.add_handler(CommandHandler("start", on_start))
+dispatcher.add_handler(function_handler)
 updater.start_polling()
 updater.idle()

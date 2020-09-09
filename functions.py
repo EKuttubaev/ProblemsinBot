@@ -4,20 +4,25 @@ from telegram import ReplyKeyboardMarkup
 
 def add_product_name(update, context):
     update.message.reply_text("Введите название товара")
-    pass
+    return 1
 
 
 def product_unit(update, context):
-    update.message.reply_text("Укажите единицу измерения")
     main_buttons = [
-        ["Кг", "Литры" "Штук"]
+        ["Кг", "Литры", "Штук"]
     ]
     buttons = ReplyKeyboardMarkup(main_buttons)
-    pass
+    update.message.reply_text("Укажите единицу измерения", reply_markup=buttons)
+    return 2
 
 
 def add_expense(update, context):
-    update.message.reply_text("Enter sum of expense")
+    update.message.reply_text("Введите сумму продажи")
+
+    update.message.reply_text("Товар добавлен")
+
+    return ConversationHandler.END()
+
+
+def clean(clean, context):
     pass
-
-
