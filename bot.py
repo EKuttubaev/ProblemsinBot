@@ -20,6 +20,6 @@ def on_start(update, context):
 updater = Updater(config.token, use_context=True)
 dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler("start", on_start))
-
+dispatcher
 updater.start_polling()
 updater.idle()
