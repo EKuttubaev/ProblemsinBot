@@ -11,6 +11,7 @@ class User(Model):
     class Meta:
         database = db
 
+
 class Product(Model):
     price = IntegerField(verbose_name="Цена")
     name = CharField(max_length=20, verbose_name="Наименование товара")
