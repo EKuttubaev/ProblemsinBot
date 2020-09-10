@@ -1,5 +1,7 @@
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
+from user import *
+import config
 import config
 import functions
 from database.user import *
@@ -26,6 +28,10 @@ def on_start(update, context):
                                                        "Для регистрации напишите /reg")
 
 
+updater = Updater(config.token, use_context=True)
+dispatcher = updater.dispatcher
+
+dispatcher.add_handler(CommandHandler("start", on_start))
 updater = Updater(config.token, use_context=True)
 dispatcher = updater.dispatcher
 
@@ -66,5 +72,15 @@ dispatcher.add_handler(CommandHandler("start", on_start))
 dispatcher.add_handler(function_add_product)
 dispatcher.add_handler(product_function_handler)
 prep_database()
+dispatcher.add_handler(function_handler)
+
+conversation_handler = ConversationHandler(
+    entry_points=[(CommandHandler("reg", functions.on_reg))],
+    states={
+        1: [MessageHandler(Filters.text, functions.reg_user)]
+    },
+    fallbacks=[CommandHandler("clean", functions.clean)]
+)
+dispatcher.add_handler(conversation_handler)
 updater.start_polling()
 updater.idle()

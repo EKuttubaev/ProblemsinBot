@@ -1,5 +1,7 @@
 from telegram.ext import ConversationHandler
 from telegram import ReplyKeyboardMarkup
+from user import *
+from datetime import datetime
 from datetime import datetime
 from database.user import Product, User
 from database.user import Product, Sale
@@ -79,6 +81,23 @@ def reg_user(update, context):
         return 1
 
 
+def on_reg(update, context):
+    update.message.reply_text("Введите Ваше имя")
+    return 1
+
+
+def reg_user(update, context):
+    try:
+        new_name = update.message.text
+        User.create(name=new_name, created_at=datetime.now(), tel_id=update.effective_user.id)
+        update.message.reply_text("Вы успешно зарегистрированы! нажмите команду:  /start")
+        return ConversationHandler.END
+
+    except:
+        update.message.reply_text("Введите имя заново:")
+        return 1
+
+
 def clean(clean, context):
     pass
 
@@ -121,4 +140,5 @@ def save_sale_count(update, context):
                 date_and_time=datetime.now(), total=sale_count * product.price)
     update.message.reply_text("Товар продан")
     return ConversationHandler.END
+
 
