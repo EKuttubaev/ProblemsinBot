@@ -1,26 +1,36 @@
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-import configuration
+from user import *
+import config
 import functions
 from database.user import *
 
 
-updater = Updater(configuration.TOKEN, use_context=True)
-dispatcher = updater.dispatcher
 print("Бот запущен!")
 
 
 def on_start(update, context):
-    main_buttons = [
-        ["Продажа", "Категории"],
-        ["Отчеты", "История"],
-        ["Добавить товар"]
-    ]
-    buttons = ReplyKeyboardMarkup(main_buttons)
-    chat = update.effective_chat
-    context.bot.send_message(chat_id=chat.id, text="Привет! Я бот помощник.\n Выберите команду.",
-                             reply_markup=buttons)
+    current_id = update.effective_user.id
+    if User.select().where(User.tel_id == current_id).count() > 0:
+        main_buttons = [
+            ["Продажа", "Категории"],
+            ["Отчеты", "История"],
+            ["Добавить товар"]
+        ]
+        buttons = ReplyKeyboardMarkup(main_buttons)
+        chat = update.effective_chat
+        context.bot.send_message(chat_id=chat.id, text="Привет! Я бот помощник.\n Выберите команду.",
+                                 reply_markup=buttons)
+    else:
+        chat = update.effective_chat
+        context.bot.send_message(chat_id=chat.id, text="Вам необходимо зарегистрироваться:\n "
+                                                       "Для регистрации напишите /reg")
 
+
+updater = Updater(config.token, use_context=True)
+dispatcher = updater.dispatcher
+
+dispatcher.add_handler(CommandHandler("start", on_start))
 
 product_function_handler = ConversationHandler(
     entry_points=[MessageHandler(Filters.regex("Добавить товар"), functions.add_product_name)],
@@ -43,6 +53,16 @@ function_add_product = ConversationHandler(
 
     fallbacks=[CommandHandler("clean", functions.clean)]
 )
+dispatcher.add_handler(function_handler)
+
+conversation_handler = ConversationHandler(
+    entry_points=[(CommandHandler("reg", functions.on_reg))],
+    states={
+        1: [MessageHandler(Filters.text, functions.reg_user)]
+    },
+    fallbacks=[CommandHandler("clean", functions.clean)]
+)
+dispatcher.add_handler(conversation_handler)
 
 dispatcher.add_handler(CommandHandler("start", on_start))
 dispatcher.add_handler(function_add_product)
