@@ -20,17 +20,19 @@ def on_start(update, context):
                              reply_markup=buttons)
 
 
-function_handler = ConversationHandler(
+product_function_handler = ConversationHandler(
     entry_points=[MessageHandler(Filters.regex("Продажа"), functions.add_product_name)],
     states={
         1: [MessageHandler(Filters.text, functions.product_unit)],
-        2: [MessageHandler(Filters.text, functions.add_expense)],
+        2: [MessageHandler(Filters.text, functions.product_amount)],
+        3: [MessageHandler(Filters.text, functions.add_expense)],
     },
-
     fallbacks=[CommandHandler("clean", functions.clean)]
 )
 
+category_function_handler = ConversationHandler()
+
 dispatcher.add_handler(CommandHandler("start", on_start))
-dispatcher.add_handler(function_handler)
+dispatcher.add_handler(product_function_handler)
 updater.start_polling()
 updater.idle()

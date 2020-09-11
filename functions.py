@@ -16,19 +16,32 @@ def product_unit(update, context):
     return 2
 
 
+def product_amount(update, context):
+    update.message.reply_text("Введите количество")
+    return 3
+
+
 def add_expense(update, context):
     update.message.reply_text("Введите сумму продажи")
-
     update.message.reply_text("Товар добавлен")
+    return ConversationHandler.END
 
-    return ConversationHandler.END()
+
 
 
 def clean(clean, context):
     pass
 
 
-# Функция добавления товара в базу.
+def add_category(update, context):
+    update.message.reply_text("Введите категорию")
+
+
+def delete_category(update, context):
+    update.message.reply_text("Введите категорию для удаления")
+
+
+#Функция добавления товара в базу.
 
 def add_product(update, context):
     update.message.reply_text("")
