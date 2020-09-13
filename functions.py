@@ -44,4 +44,28 @@ def delete_category(update, context):
 #Функция добавления товара в базу.
 
 def add_product(update, context):
-    update.message.reply_text("")
+    update.message.reply_text("Введите наименование товара:")
+    return 1
+
+
+def add_product_price(update, context):
+    update.message.reply_text("Введите цену")
+    return 2
+
+
+def add_product_unit(update, context):
+    update.message.reply_text("Введите ед.измерения")
+    return 3
+
+
+def add_product_count(update, context):
+    update.message.reply_text("Введите кол-во")
+
+    return 4
+
+
+def add_product_end(update, context):
+    update.message.reply_text("Товар добавлен")
+    return ConversationHandler.END()
+
+

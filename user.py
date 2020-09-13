@@ -1,4 +1,5 @@
 from peewee import *
+from datetime import date
 
 db = SqliteDatabase("SKB.db")
 
@@ -13,10 +14,16 @@ class User(Model):
 
 
 class Product(Model):
-    price = IntegerField(verbose_name="Цена")
     name = CharField(max_length=20, verbose_name="Наименование товара")
+    price = IntegerField(verbose_name="Цена")
     unit = IntegerField(verbose_name="Ед. Измерения")
     count = IntegerField(verbose_name="Кол-во")
 
     class Meta:
         database = db
+
+db.connect()
+
+
+db.create_tables([User, Product])
+
