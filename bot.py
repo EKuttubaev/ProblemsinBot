@@ -2,6 +2,8 @@ from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHa
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import configuration
 import functions
+from database.user import *
+
 
 updater = Updater(configuration.TOKEN, use_context=True)
 dispatcher = updater.dispatcher
@@ -27,7 +29,6 @@ product_function_handler = ConversationHandler(
         2: [MessageHandler(Filters.text, functions.product_amount)],
         3: [MessageHandler(Filters.text, functions.add_expense)],
     },
-
     fallbacks=[CommandHandler("clean", functions.clean)]
 )
 
@@ -47,5 +48,7 @@ function_add_product = ConversationHandler(
 dispatcher.add_handler(CommandHandler("start", on_start))
 dispatcher.add_handler(function_add_product)
 dispatcher.add_handler(product_function_handler)
+
+prep_database()
 updater.start_polling()
 updater.idle()
