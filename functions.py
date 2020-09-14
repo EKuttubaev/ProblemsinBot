@@ -1,6 +1,7 @@
 from telegram.ext import ConversationHandler
 from telegram import ReplyKeyboardMarkup
 from datetime import datetime
+from database.user import Product, User
 from database.user import Product, Sale
 
 product_data = {}
