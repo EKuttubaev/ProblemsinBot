@@ -73,7 +73,32 @@ dispatcher.add_handler(function_add_product)
 dispatcher.add_handler(product_function_handler)
 prep_database()
 dispatcher.add_handler(function_handler)
+report_handler = (MessageHandler(Filters.regex("Отчеты"), functions.on_reports))
+dispatcher.add_handler(report_handler)
 
+one_day_report = (MessageHandler(Filters.regex("За сегодня"), functions.show_daily_report))
+dispatcher.add_handler(one_day_report)
+
+return_to_main_menu = MessageHandler(Filters.regex("Главное меню"), on_start)
+dispatcher.add_handler(return_to_main_menu)
+for_day_report_handler = ConversationHandler(
+    entry_points=[(MessageHandler(Filters.regex("За определенную дату"), functions.on_day))],
+    states={
+        1: [MessageHandler(Filters.text, functions.one_day_date)]
+    },
+    fallbacks=[]
+)
+dispatcher.add_handler(for_day_report_handler)
+
+delta_handler = ConversationHandler(
+    entry_points=[(MessageHandler(Filters.regex("За период/выберите период"), functions.delta_date))],
+    states={
+        1: [MessageHandler(Filters.text, functions.first_date)],
+        2: [MessageHandler(Filters.text, functions.second_date)]
+    },
+    fallbacks=[]
+)
+dispatcher.add_handler(delta_handler)
 conversation_handler = ConversationHandler(
     entry_points=[(CommandHandler("reg", functions.on_reg))],
     states={
