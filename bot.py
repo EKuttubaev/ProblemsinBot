@@ -23,11 +23,12 @@ def on_start(update, context):
 
 
 product_function_handler = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex("Продажа"), functions.add_product_name)],
+    entry_points=[MessageHandler(Filters.regex("Продажа"), functions.add_product)],
     states={
-        1: [MessageHandler(Filters.text, functions.product_unit)],
-        2: [MessageHandler(Filters.text, functions.product_amount)],
-        3: [MessageHandler(Filters.text, functions.add_expense)],
+        1: [MessageHandler(Filters.text, functions.save_name)],
+        2: [MessageHandler(Filters.text, functions.save_unit)],
+        3: [MessageHandler(Filters.text, functions.save_count)],
+        4: [MessageHandler(Filters.text, functions.save_price)],
     },
     fallbacks=[CommandHandler("clean", functions.clean)]
 )
@@ -48,7 +49,6 @@ function_add_product = ConversationHandler(
 dispatcher.add_handler(CommandHandler("start", on_start))
 dispatcher.add_handler(function_add_product)
 dispatcher.add_handler(product_function_handler)
-
 prep_database()
 updater.start_polling()
 updater.idle()
