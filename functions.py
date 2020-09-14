@@ -1,5 +1,8 @@
+from peewee import fn
 from telegram.ext import ConversationHandler
 from telegram import ReplyKeyboardMarkup
+from datetime import datetime, timedelta, time
+from database.user import Product, User, Sale
 from user import *
 from datetime import datetime, time, timedelta
 from datetime import datetime
@@ -154,9 +157,6 @@ def save_sale_count(update, context):
     update.message.reply_text("Товар продан")
     return ConversationHandler.END
 
-
-
-
 def main_menu(update, context):
     pass
 
@@ -166,16 +166,16 @@ def show_daily_report(update, context):
     today = datetime.today()
     day_start = datetime.combine(today, time(0, 0, 0))
     day_end = day_start + timedelta(1)
-    total_sum = Product.select(fn.Sum(Product.total).alias("sale_sum")).where(
-        (Product.date_and_time > day_start) & (Product.date_and_time < day_end)).execute()
+    total_sum = Sale.select(fn.Sum(Sale.total).alias("sale_sum")).where(
+        (Sale.date_and_time > day_start) & (Sale.date_and_time < day_end)).execute()
 
     for x in total_sum:
         if x.sale_sum == None:
             update.message.reply_text("Данных за сегодня нет")
         else:
             update.message.reply_text(f"Общая сумма продаж: {x.sale_sum}")
-    good_info = Product.select(Product).where(
-        (Product.date_and_time > day_start) & (Product.date_and_time < day_end)).execute()
+    good_info = Sale.select(Sale).where(
+        (Sale.date_and_time > day_start) & (Sale.date_and_time < day_end)).execute()
     for sale in good_info:
         update.message.reply_text(f"{sale.name},количество: {sale.count},на сумму: {sale.total}")
 
@@ -191,16 +191,16 @@ def one_day_date(update, context):
         date1 = datetime.strptime(input_datetime, "%Y/%m/%d")
         day_start = datetime.combine(date1, time(0, 0, 0))
         day_end = day_start + timedelta(1)
-        total_sum = Product.select(fn.Sum(Product.total).alias("sale_sum")).where(
-            (Product.date_and_time > day_start) & (Product.date_and_time < day_end)).execute()
+        total_sum = Sale.select(fn.Sum(Sale.total).alias("sale_sum")).where(
+            (Sale.date_and_time > day_start) & (Sale.date_and_time < day_end)).execute()
 
         for x in total_sum:
             if x.sale_sum == None:
                 update.message.reply_text("Данных за запрощенную дату нет")
             else:
                 update.message.reply_text(f"Общая сумма продаж {x.sale_sum}")
-        good_info = Product.select(Product).where(
-            (Product.date_and_time > day_start) & (Product.date_and_time < day_end)).execute()
+        good_info = Sale.select(Sale).where(
+            (Sale.date_and_time > day_start) & (Sale.date_and_time < day_end)).execute()
         for sale in good_info:
             update.message.reply_text(f"{sale.name},количество: {sale.count},на сумму: {sale.total}")
         return ConversationHandler.END
@@ -233,16 +233,16 @@ def second_date(update, context):
         date2 = datetime.strptime(data["s_date"], "%Y/%m/%d")
         day_start = datetime.combine(date1, time(0, 0, 0))
         day_end = datetime.combine(date2, time(23, 59, 59))
-        total_sum = Product.select(fn.Sum(Product.total).alias("sale_sum")).where(
-            (Product.date_and_time > day_start) & (Product.date_and_time < day_end)).execute()
+        total_sum = Sale.select(fn.Sum(Sale.total).alias("sale_sum")).where(
+            (Sale.date_and_time > day_start) & (Sale.date_and_time < day_end)).execute()
 
         for x in total_sum:
             if x.sale_sum == None:
                 update.message.reply_text("Данных за запрощенную дату нет или неправильно введена дата")
             else:
                 update.message.reply_text(f"Общая сумма продаж {x.sale_sum}")
-        good_info = Product.select(Product).where(
-            (Product.date_and_time > day_start) & (Product.date_and_time < day_end)).execute()
+        good_info = Sale.select(Sale).where(
+            (Sale.date_and_time > day_start) & (Sale.date_and_time < day_end)).execute()
         for sale in good_info:
             update.message.reply_text(f"{sale.name},количество: {sale.count},на сумму: {sale.total}")
     except:

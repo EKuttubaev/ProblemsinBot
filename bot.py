@@ -1,7 +1,5 @@
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-from user import *
-import config
 import config
 import functions
 from database.user import *
@@ -68,10 +66,11 @@ conversation_handler = ConversationHandler(
 )
 
 dispatcher.add_handler(conversation_handler)
-dispatcher.add_handler(CommandHandler("start", on_start))
+
 dispatcher.add_handler(function_add_product)
 dispatcher.add_handler(product_function_handler)
 prep_database()
+
 dispatcher.add_handler(function_handler)
 report_handler = (MessageHandler(Filters.regex("Отчеты"), functions.on_reports))
 dispatcher.add_handler(report_handler)
@@ -106,6 +105,6 @@ conversation_handler = ConversationHandler(
     },
     fallbacks=[CommandHandler("clean", functions.clean)]
 )
-dispatcher.add_handler(conversation_handler)
+
 updater.start_polling()
 updater.idle()

@@ -1,5 +1,5 @@
 from peewee import *
-
+import datetime
 db = SqliteDatabase("SKB.db")
 
 
@@ -34,6 +34,14 @@ class Sale(Model):
         database = db
 
 
+#Product.create(name="Beer",price=100,unit="литр",count=1)
+#Sale.create(product=ForeignKeyField,price="100",unit="кг",count="10",date_and_time=datetime.date,total="1000")
+
 def prep_database():
     db.connect()
-    db.create_tables([User, Product, Sale])
+    db.create_tables([User, Product,Sale])
+
+
+
+
+
