@@ -23,24 +23,22 @@ def on_start(update, context):
 
 
 product_function_handler = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex("Продажа"), functions.add_product)],
+    entry_points=[MessageHandler(Filters.regex("Добавить товар"), functions.add_product_name)],
     states={
         1: [MessageHandler(Filters.text, functions.save_name)],
         2: [MessageHandler(Filters.text, functions.save_unit)],
         3: [MessageHandler(Filters.text, functions.save_count)],
         4: [MessageHandler(Filters.text, functions.save_price)],
     },
-    fallbacks=[CommandHandler("clean", functions.clean)]
+    fallbacks=[]
 )
 
 
 function_add_product = ConversationHandler(
-    entry_points=[MessageHandler(Filters.regex("Добавить товар"), functions.add_product)],
+    entry_points=[MessageHandler(Filters.regex("Продажа"), functions.add_sale_product)],
     states={
-        1: [MessageHandler(Filters.text, functions.add_product_price)],
-        2: [MessageHandler(Filters.text, functions.add_product_unit)],
-        3: [MessageHandler(Filters.text, functions.add_product_count)],
-        4: [MessageHandler(Filters.text, functions.add_product_end)]
+        1: [MessageHandler(Filters.text, functions.save_sale_name)],
+        2: [MessageHandler(Filters.text, functions.save_sale_count)],
     },
 
     fallbacks=[CommandHandler("clean", functions.clean)]

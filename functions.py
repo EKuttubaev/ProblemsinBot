@@ -1,14 +1,15 @@
 from telegram.ext import ConversationHandler
 from telegram import ReplyKeyboardMarkup
 from datetime import datetime
-from database.user import Product
+from database.user import Product, Sale
 
+product_data = {}
 sale_data = {}
 
 
 def add_product_name(update, context):
     user_id = update.effective_user.id
-    sale_data[user_id] = {}
+    product_data[user_id] = {}
     update.message.reply_text("Введите название товара")
     return 1
 
@@ -16,7 +17,7 @@ def add_product_name(update, context):
 def save_name(update, context):
     product_name = update.message.text
     user_id = update.effective_user.id
-    sale_data[user_id]["name"] = product_name
+    product_data[user_id]["name"] = product_name
 
     main_buttons = [
         ["Кг", "Литры", "Штук"]
@@ -29,7 +30,7 @@ def save_name(update, context):
 def save_unit(update, context):
     product_unit = update.message.text
     user_id = update.effective_user.id
-    sale_data[user_id]["unit"] = product_unit
+    product_data[user_id]["unit"] = product_unit
 
     update.message.reply_text("Введите количество")
     return 3
@@ -38,26 +39,26 @@ def save_unit(update, context):
 def save_count(update, context):
     product_count = update.message.text
     user_id = update.effective_user.id
-    sale_data[user_id]["count"] = product_count
+    product_data[user_id]["count"] = product_count
 
     update.message.reply_text("Введите цену")
     return 4
 
 
 def save_price(update, context):
-    sale_price = update.message.text
+    product_price = update.message.text
     user_id = update.effective_user.id
-    sale_data[user_id]["price"] = sale_price
+    product_data[user_id]["price"] = product_price
 
-    Product.create(name=sale_data[user_id]["name"],
-                   unit=sale_data[user_id]["unit"],
-                   count=sale_data[user_id]["count"],
-                   price=sale_data[user_id]["price"])
+    Product.create(name=product_data[user_id]["name"],
+                   unit=product_data[user_id]["unit"],
+                   count=product_data[user_id]["count"],
+                   price=product_data[user_id]["price"])
 
-    del sale_data[user_id]
+    del product_data[user_id]
 
     update.message.reply_text("Товар добавлен")
-    return ConversationHandler.END
+    return 1
 
 
 def clean(clean, context):
@@ -76,29 +77,29 @@ def clean(clean, context):
 
 #def add_product(update, context):
     #update.message.reply_text("")
-def add_product(update, context):
+def add_sale_product(update, context):
+    user_id = update.effective_user.id
+    sale_data[user_id] = {}
     update.message.reply_text("Введите наименование товара:")
     return 1
 
 
-def add_product_price(update, context):
-    update.message.reply_text("Введите цену")
+def save_sale_name(update, context):
+    sale_name = update.message.text
+    user_id = update.effective_user.id
+    sale_data[user_id]["name"] = sale_name
+
+    update.message.reply_text("Введите кол-во")
     return 2
 
 
-def add_product_unit(update, context):
-    update.message.reply_text("Введите ед.измерения")
-    return 3
-
-
-def add_product_count(update, context):
-    update.message.reply_text("Введите кол-во")
-
-    return 4
-
-
-def add_product_end(update, context):
-    update.message.reply_text("Товар добавлен")
-    return ConversationHandler.END()
-
+def save_sale_count(update, context):
+    sale_count = int(update.message.text)
+    user_id = update.effective_user.id
+    product_name = sale_data[user_id]["name"]
+    product = Product.select().where(Product.name == product_name).get()
+    Sale.create(product=product, count=sale_count, unit=product.unit, price=product.price,
+                date_and_time=datetime.now(), total=sale_count * product.price)
+    update.message.reply_text("Товар продан")
+    return ConversationHandler.END
 

@@ -37,9 +37,4 @@ class Sale(Model):
 
 def prep_database():
     db.connect()
-    db.create_tables([User, Product])
-
-
-
-
-
+    db.create_tables([User, Product, Sale])
