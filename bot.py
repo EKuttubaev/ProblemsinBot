@@ -37,11 +37,6 @@ product_function_handler = ConversationHandler(
 )
 
 
-def add_product_name (update, context):
-    Sale.create(name=update.massege.text)
-    minus = Product.count -
-
-
 function_add_product = ConversationHandler(
     entry_points=[MessageHandler(Filters.regex("Добавить товар"), functions.add_product)],
     states={
@@ -76,7 +71,7 @@ def add_product_count(update, context):
 
 
 def add_product_end(update, context):
-
+    pass
 
 category_function_handler = ConversationHandler()
 
