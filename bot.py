@@ -44,8 +44,6 @@ function_add_product = ConversationHandler(
     fallbacks=[CommandHandler("clean", functions.clean)]
 )
 
-category_function_handler = ConversationHandler()
-
 dispatcher.add_handler(CommandHandler("start", on_start))
 dispatcher.add_handler(function_add_product)
 dispatcher.add_handler(product_function_handler)
