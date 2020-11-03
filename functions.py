@@ -1,14 +1,8 @@
 from peewee import fn
 from telegram.ext import ConversationHandler
 from telegram import ReplyKeyboardMarkup
-from datetime import datetime, timedelta, time
 from database.user import Product, User, Sale
-from user import *
 from datetime import datetime, time, timedelta
-from datetime import datetime
-from datetime import datetime
-from database.user import Product, User
-from database.user import Product, Sale
 
 product_data = {}
 sale_data = {}
@@ -67,24 +61,6 @@ def save_price(update, context):
     update.message.reply_text("Товар добавлен")
     return 1
 
-
-def on_reg(update, context):
-    update.message.reply_text("Введите Ваше имя")
-    return 1
-
-
-def reg_user(update, context):
-    try:
-        new_name = update.message.text
-        User.create(name=new_name, created_at=datetime.now(), tel_id=update.effective_user.id)
-        update.message.reply_text("Вы успешно зарегистрированы! нажмите команду:  /start")
-        return ConversationHandler.END
-
-    except:
-        update.message.reply_text("Введите имя заново:")
-        return 1
-
-
 def on_reg(update, context):
     update.message.reply_text("Введите Ваше имя")
     return 1
@@ -118,19 +94,6 @@ def clean(clean, context):
     pass
 
 
-
-#def add_category(update, context):
-    #update.message.reply_text("Введите категорию")
-
-
-#def delete_category(update, context):
-    #update.message.reply_text("Введите категорию для удаления")
-
-
-#Функция добавления товара в базу.
-
-#def add_product(update, context):
-    #update.message.reply_text("")
 def add_sale_product(update, context):
     user_id = update.effective_user.id
     sale_data[user_id] = {}
@@ -156,9 +119,6 @@ def save_sale_count(update, context):
                 date_and_time=datetime.now(), total=sale_count * product.price)
     update.message.reply_text("Товар продан")
     return ConversationHandler.END
-
-def main_menu(update, context):
-    pass
 
 
 def show_daily_report(update, context):
@@ -245,8 +205,9 @@ def second_date(update, context):
             (Sale.date_and_time > day_start) & (Sale.date_and_time < day_end)).execute()
         for sale in good_info:
             update.message.reply_text(f"{sale.name},количество: {sale.count},на сумму: {sale.total}")
+        return ConversationHandler.END
     except:
         update.message.reply_text("Неправильно введена дата, введите период заново")
-        return ConversationHandler.END
+        return
 
     return ConversationHandler.END

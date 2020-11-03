@@ -1,5 +1,5 @@
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, User
 import config
 import functions
 from database.user import *
@@ -26,10 +26,6 @@ def on_start(update, context):
                                                        "Для регистрации напишите /reg")
 
 
-updater = Updater(config.token, use_context=True)
-dispatcher = updater.dispatcher
-
-dispatcher.add_handler(CommandHandler("start", on_start))
 updater = Updater(config.token, use_context=True)
 dispatcher = updater.dispatcher
 
@@ -71,7 +67,6 @@ dispatcher.add_handler(function_add_product)
 dispatcher.add_handler(product_function_handler)
 prep_database()
 
-dispatcher.add_handler(function_handler)
 report_handler = (MessageHandler(Filters.regex("Отчеты"), functions.on_reports))
 dispatcher.add_handler(report_handler)
 
@@ -80,6 +75,7 @@ dispatcher.add_handler(one_day_report)
 
 return_to_main_menu = MessageHandler(Filters.regex("Главное меню"), on_start)
 dispatcher.add_handler(return_to_main_menu)
+
 for_day_report_handler = ConversationHandler(
     entry_points=[(MessageHandler(Filters.regex("За определенную дату"), functions.on_day))],
     states={
@@ -98,13 +94,7 @@ delta_handler = ConversationHandler(
     fallbacks=[]
 )
 dispatcher.add_handler(delta_handler)
-conversation_handler = ConversationHandler(
-    entry_points=[(CommandHandler("reg", functions.on_reg))],
-    states={
-        1: [MessageHandler(Filters.text, functions.reg_user)]
-    },
-    fallbacks=[CommandHandler("clean", functions.clean)]
-)
+
 
 updater.start_polling()
 updater.idle()
